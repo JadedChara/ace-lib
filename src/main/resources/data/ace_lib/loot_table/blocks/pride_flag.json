@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "ace_lib:flag_type"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "ace_lib:pride_flag"
+        }
+      ],
+      "rolls": 1
+    }
+  ],"random_sequence": "ace_lib:blocks/pride_flag"
+}

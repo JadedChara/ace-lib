@@ -1,0 +1,43 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.flag_pole.gentle_wave": {
+			"loop": true,
+			"animation_length": 1
+		},
+		"animation.flag_pole.wall_flat": {
+			"loop": true,
+			"bones": {
+				"pole": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.flag_pole.ceiling_hang": {
+			"loop": true,
+			"bones": {
+				"pole": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.flag_pole.wall_pole": {
+			"loop": true,
+			"bones": {
+				"block": {
+					"rotation": {
+						"vector": [90, 62.5, 90]
+					},
+					"position": {
+						"vector": [5, 8, 8]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

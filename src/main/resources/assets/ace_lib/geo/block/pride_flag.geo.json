@@ -1,0 +1,97 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.pride_flag",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "block",
+					"pivot": [-5, 0, 0]
+				},
+				{
+					"name": "flag",
+					"parent": "block",
+					"pivot": [-5, 10, 0],
+					"cubes": [
+						{
+							"origin": [-5, 6, 0.001],
+							"size": [3, 8, 0.002],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [4, 16]},
+								"east": {"uv": [0, 0], "uv_size": [0, 16]},
+								"south": {"uv": [12, 0], "uv_size": [4, 16]},
+								"west": {"uv": [3, 0], "uv_size": [0, 16]},
+								"up": {"uv": [0, 0], "uv_size": [3, 0]},
+								"down": {"uv": [3, 0], "uv_size": [3, 0]}
+							}
+						}
+					]
+				},
+				{
+					"name": "one",
+					"parent": "flag",
+					"pivot": [-2, 10, 0],
+					"cubes": [
+						{
+							"origin": [-2, 6, 0.001],
+							"size": [3, 8, 0.002],
+							"uv": {
+								"north": {"uv": [4, 0], "uv_size": [4, 16]},
+								"east": {"uv": [3, 0], "uv_size": [0, 16]},
+								"south": {"uv": [8, 0], "uv_size": [4, 16]},
+								"west": {"uv": [6, 0], "uv_size": [0, 16]},
+								"up": {"uv": [3, 0], "uv_size": [3, 0]},
+								"down": {"uv": [6, 0], "uv_size": [3, 0]}
+							}
+						}
+					]
+				},
+				{
+					"name": "two",
+					"parent": "one",
+					"pivot": [1, 10, 0],
+					"cubes": [
+						{
+							"origin": [1, 6, 0.001],
+							"size": [3, 8, 0.002],
+							"uv": {
+								"north": {"uv": [8, 0], "uv_size": [4, 16]},
+								"east": {"uv": [10, 5], "uv_size": [0, 16]},
+								"south": {"uv": [4, 0], "uv_size": [4, 16]},
+								"west": {"uv": [13, 5], "uv_size": [0, 16]},
+								"up": {"uv": [10, 5], "uv_size": [3, 0]},
+								"down": {"uv": [13, 5], "uv_size": [3, 0]}
+							}
+						}
+					]
+				},
+				{
+					"name": "three",
+					"parent": "two",
+					"pivot": [4, 10, 0],
+					"cubes": [
+						{
+							"origin": [4, 6, 0.001],
+							"size": [3, 8, 0.002],
+							"uv": {
+								"north": {"uv": [12, 0], "uv_size": [4, 16]},
+								"east": {"uv": [8, 0], "uv_size": [0, 16]},
+								"south": {"uv": [0, 0], "uv_size": [4, 16]},
+								"west": {"uv": [11, 0], "uv_size": [0, 16]},
+								"up": {"uv": [8, 0], "uv_size": [3, 0]},
+								"down": {"uv": [11, 0], "uv_size": [3, 0]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

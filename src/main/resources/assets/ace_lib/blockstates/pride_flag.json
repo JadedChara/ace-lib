@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "ace_lib:block/pride_flag", "uvlock": true },
+    "facing=east":  { "model": "ace_lib:block/pride_flag", "y":  90, "uvlock": true },
+    "facing=south": { "model": "ace_lib:block/pride_flag", "y": 180, "uvlock": true },
+    "facing=west":  { "model": "ace_lib:block/pride_flag", "y": 270, "uvlock": true }
+  }
+}
