@@ -5,6 +5,7 @@ import io.github.jadedchara.ace_lib.AceLib;
 import io.github.jadedchara.ace_lib.common.block.PrideFlagBlock;
 import io.github.jadedchara.ace_lib.common.block.PrideFlagBlockEntity;
 import io.github.jadedchara.ace_lib.common.item.PrideFlag;
+import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -14,6 +15,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.DataComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.PaintingTags;
@@ -38,7 +40,7 @@ public class BlockRegistry {
 			new Item.Settings()
 				.component(
 					DataComponentRegistry.FLAG_TYPE,"classic"
-				)
+				)//.equipmentSlot()
 		);
 		Registry.register(Registries.ITEM, id, blockItem);
 		return Registry.register(Registries.BLOCK, id, block);
@@ -67,7 +69,7 @@ public class BlockRegistry {
 		Identifier.of(AceLib.MOD_ID, "pride_flags"));
 	public static ItemGroup PRIDE_FLAGS = FabricItemGroup.builder()
 		.icon(() -> new ItemStack(PRIDE_FLAG))
-		.name(Text.translatable("itemGroup.pride_flags"))
+		.name(Text.translatable("itemGroup.ace_lib.pride_flags"))
 		.entries((dP, entries)->{
 			ItemStack is = new ItemStack(PRIDE_FLAG.asItem());
 			is.set(DataComponentRegistry.FLAG_TYPE,"classic");
@@ -80,20 +82,6 @@ public class BlockRegistry {
 	public static void init(){
 		AceLib.LOGGER.info("Registering Blocks!");
 		Registry.register(Registries.ITEM_GROUP,PRIDE_FLAGS_KEY,PRIDE_FLAGS);
-		//Item
-		//ItemGroupEvents.modifyEntriesEvent(PRIDE_FLAGS_KEY).register(ig->{
-			//ig.addItem(PRIDE_FLAG.asItem());
-		//}
-		//);
 	}
 
-	public static void updateFlags(){
-		AceLib.LOGGER.info("Updating Flags!");
-		//PRIDE_FLAGS.
-		//ItemGroups
-	}
-
-	public static void generatePrideFlagEntries(ItemGroup.DisplayParameters p) {
-		//
-	}
 }

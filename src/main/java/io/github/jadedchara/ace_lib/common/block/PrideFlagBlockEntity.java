@@ -30,7 +30,6 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 	private static final RawAnimation WAVING = RawAnimation
 		.begin().thenLoop("pride_flag.gentle_wave");
 	private static final RawAnimation WALLMOUNT = RawAnimation
-		.copyOf(WAVING)
 		.begin().thenLoop("pride_flag.wall_pole");
 	private static final RawAnimation FLOOR = RawAnimation
 		.begin().thenLoop("pride_flag.wall_pole");
@@ -101,7 +100,7 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<GeoAnimatable>(this, state -> {
-			if (this.getWorld().getBlockState(this.getPos()).get(Properties.ATTACHED)) {
+			if (this.getWorld().getBlockState(this.getPos()).get(Properties.ATTACHED) == true) {
 				return state.setAndContinue(WALLMOUNT);
 			}
 

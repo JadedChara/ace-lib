@@ -41,6 +41,7 @@ public class AceLib implements ModInitializer {
 				@Override
 				public void reload(ResourceManager manager) {
 
+
 					List<ItemStack> prideFlags = new ArrayList<>();
 					ItemStack def = BlockRegistry.PRIDE_FLAG.asItem().getDefaultStack();
 					def.set(
@@ -59,16 +60,23 @@ public class AceLib implements ModInitializer {
 							r.close();
 							//
 							try{
-								System.out.println(
+								/*System.out.println(
 									"Retrieved: "
 										+id.toString()
 										+" =\n"
 										+j.get("type").toString()
 										+"\n"
 										+j.get("config").toString()
-								);
+								);*/
 								ItemStack temp = BlockRegistry.PRIDE_FLAG.asItem().getDefaultStack();
-								temp.set(DataComponentRegistry.FLAG_TYPE,j.get("type").toString());
+								temp.set(
+									DataComponentRegistry.FLAG_TYPE,
+									j
+										.get("type")
+										.toString()
+										.replaceAll("\"","")
+								);
+
 								prideFlags.add(temp);
 							}catch(Exception e){
 								LOGGER.error("Error occurred while adding Pride Flag Item: " + e);
