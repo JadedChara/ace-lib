@@ -12,6 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.specialty.DynamicGeoBlockRenderer;
@@ -22,12 +23,18 @@ import software.bernie.geckolib.renderer.specialty.DynamicGeoItemRenderer;
  * Implementation of {@link DynamicGeoItemRenderer} for use with {@link AddonItemModelRenderLayer}.
  * <br></br>
  * This gets called in the super of AddonItemModelRenderLayer, so it doesn't need to be referenced anywhere else.
- * @Author Nightstrike
- * @Version 1.0.0
+ * @author Nightstrike
+ * @version 1.0.0
  */
 public class ItemSubRenderer<T extends Item & GeoAnimatable> extends DynamicGeoItemRenderer<T> {
+
+
+	public AdjustableGeoItemModel<T> model;
+
+	public ItemStack savedStack;
 	public ItemSubRenderer(AdjustableGeoItemModel<T> model) {
 		super(model);
+		this.model = model;
 		//this.render();
 
 	}
@@ -37,17 +44,24 @@ public class ItemSubRenderer<T extends Item & GeoAnimatable> extends DynamicGeoI
 	}
 
 	@Override
-	public GeoModel<T> getGeoModel() {
+	public AdjustableGeoItemModel<T> getGeoModel() {
 		return this.model;
 	}
 
-	public void tweakModel(ItemStack s){}
+	public void setSavedStack(ItemStack s){
+		this.savedStack = s;
+	}
+
+	public void tweakModel(ItemStack s){
+	}
 
 	@Override
 	public void render(ItemStack stack, ModelTransformationMode transformType, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay) {
 		this.animatable = (T) stack.getItem();
 		this.currentItemStack = stack;
+
 		tweakModel(this.currentItemStack);
+
 		this.renderPerspective = transformType;
 		float partialTick = MinecraftClient.getInstance().method_60646().getTickDelta(true);
 		if (transformType == ModelTransformationMode.GUI) {
@@ -59,6 +73,11 @@ public class ItemSubRenderer<T extends Item & GeoAnimatable> extends DynamicGeoI
 		}
 
 		this.animatable = null;
+	}
+	@Override
+	@Nullable
+	public RenderLayer getRenderType(T animatable, Identifier texture, @Nullable VertexConsumerProvider bufferSource, float partialTick) {
+		return this.getGeoModel().getRenderType(animatable, texture);
 	}
 
 }

@@ -11,17 +11,31 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.HolderLookup;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
 public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity {
 	String TYPE = "classic";
+
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private static final RawAnimation WAVING = RawAnimation
+		.begin().thenLoop("pride_flag.gentle_wave");
+	private static final RawAnimation WALLMOUNT = RawAnimation
+		.copyOf(WAVING)
+		.begin().thenLoop("pride_flag.wall_pole");
+	private static final RawAnimation FLOOR = RawAnimation
+		.begin().thenLoop("pride_flag.wall_pole");
+
+
 
 	public PrideFlagBlockEntity(BlockPos pos, BlockState state) {
 		super(BlockRegistry.PRIDE_FLAG_BLOCKENTITY, pos, state);
@@ -86,7 +100,13 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 	//GECKOLIB
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<GeoAnimatable>(this, state -> {
+			if (this.getWorld().getBlockState(this.getPos()).get(Properties.ATTACHED)) {
+				return state.setAndContinue(WALLMOUNT);
+			}
 
+			return state.setAndContinue(WAVING);
+		}));
 	}
 
 	@Override

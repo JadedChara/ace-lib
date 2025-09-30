@@ -38,8 +38,12 @@ public class PrideFlagModel extends AdjustableGeoBlockModel<PrideFlagBlockEntity
 	public Identifier getTextureResource(PrideFlagBlockEntity a, @Nullable GeoRenderer renderer){
 		try{
 
-			return Identifier.of(AceLib.MOD_ID,
+			Identifier temp =  Identifier.tryValidate(AceLib.MOD_ID,
 				"textures/flag/" + a.fetchTYPE().replaceAll("\"","")+".png");
+			if(temp == null){
+				temp = Identifier.of(AceLib.MOD_ID,"textures/flag/classic.png");
+			}
+			return this.TEXTURE = temp;
 		}catch(Exception e){
 			//System.out.println(e);
 			return this.TEXTURE;

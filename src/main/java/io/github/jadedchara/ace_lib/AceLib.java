@@ -5,7 +5,6 @@ import io.github.jadedchara.ace_lib.common.registry.BlockRegistry;
 import io.github.jadedchara.ace_lib.common.registry.DataComponentRegistry;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -41,6 +40,7 @@ public class AceLib implements ModInitializer {
 
 				@Override
 				public void reload(ResourceManager manager) {
+
 					List<ItemStack> prideFlags = new ArrayList<>();
 					ItemStack def = BlockRegistry.PRIDE_FLAG.asItem().getDefaultStack();
 					def.set(

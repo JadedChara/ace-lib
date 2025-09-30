@@ -15,6 +15,7 @@ public class FlagItemModel extends AdjustableGeoItemModel<PrideFlag> {
 	public Identifier ANIMATION = buildFormattedAnimationPath(Identifier.of(AceLib.MOD_ID,"pride_flag"));
 	public FlagItemModel(Identifier reference) {
 		super(reference);
+		//this.TEXTURE = texPass;
 	}
 	@Override
 	public Identifier getAnimationResource(PrideFlag a){

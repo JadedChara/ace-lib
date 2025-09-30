@@ -1,11 +1,11 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"animation.flag_pole.gentle_wave": {
+		"animation.pride_flag.gentle_wave": {
 			"loop": true,
 			"animation_length": 1
 		},
-		"animation.flag_pole.wall_flat": {
+		"animation.pride_flag.wall_flat": {
 			"loop": true,
 			"bones": {
 				"pole": {
@@ -15,7 +15,7 @@
 				}
 			}
 		},
-		"animation.flag_pole.ceiling_hang": {
+		"animation.pride_flag.ceiling_hang": {
 			"loop": true,
 			"bones": {
 				"pole": {
@@ -25,7 +25,7 @@
 				}
 			}
 		},
-		"animation.flag_pole.wall_pole": {
+		"animation.pride_flag.wall_pole": {
 			"loop": true,
 			"bones": {
 				"block": {

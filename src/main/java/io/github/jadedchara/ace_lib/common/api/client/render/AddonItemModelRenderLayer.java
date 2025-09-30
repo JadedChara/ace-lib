@@ -36,11 +36,11 @@ public class AddonItemModelRenderLayer<T extends Item & GeoAnimatable> extends G
 
 	}
 	@Override
-	public GeoModel<T> getGeoModel() {
+	public AdjustableGeoItemModel<T> getGeoModel() {
 		return this.MODEL;
 	}
 	@Override
-	protected Identifier getTextureResource(T animatable) {
+	public Identifier getTextureResource(T animatable) {
 		return this.TEXTURE;
 	}
 

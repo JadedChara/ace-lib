@@ -4,7 +4,6 @@ import io.github.jadedchara.ace_lib.AceLib;
 import io.github.jadedchara.ace_lib.common.api.client.render.AdjustableGeoItemModel;
 import io.github.jadedchara.ace_lib.common.item.PrideFlag;
 import io.github.jadedchara.ace_lib.common.registry.DataComponentRegistry;
-import net.minecraft.data.client.model.Models;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -15,6 +14,7 @@ public class FlagItemClothModel extends AdjustableGeoItemModel<PrideFlag> {
 	public Identifier ANIMATION = buildFormattedAnimationPath(Identifier.of(AceLib.MOD_ID,"pride_flag"));
 	public FlagItemClothModel(Identifier reference) {
 		super(reference);
+
 	}
 	@Override
 	public Identifier getAnimationResource(PrideFlag a){
@@ -25,7 +25,18 @@ public class FlagItemClothModel extends AdjustableGeoItemModel<PrideFlag> {
 		return this.MODEL;
 	}
 	@Override
-	public Identifier getTextureResource(PrideFlag a, @Nullable GeoRenderer renderer){
+	public Identifier getTextureResource(PrideFlag a, @Nullable GeoRenderer r){
+		Identifier temp = Identifier.tryValidate(
+			"ace_lib",
+			"textures/flag/"+a
+				.getComponents()
+				.getOrDefault(DataComponentRegistry.FLAG_TYPE,"classic")
+				.replaceAll("\"","")+".png"
+
+		);
+		if(temp == null){
+			temp = Identifier.of(AceLib.MOD_ID,"textures/flag/classic.png");
+		}
 		return this.TEXTURE;
 
 	}

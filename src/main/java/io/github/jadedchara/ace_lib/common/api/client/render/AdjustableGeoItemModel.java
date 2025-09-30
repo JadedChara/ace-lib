@@ -3,6 +3,7 @@ package io.github.jadedchara.ace_lib.common.api.client.render;
 import io.github.jadedchara.ace_lib.AceLib;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
@@ -44,5 +45,9 @@ public class AdjustableGeoItemModel<T extends GeoAnimatable> extends DefaultedIt
 		this.ANIMATION = t;
 	}
 
+	@Override
+	public @Nullable RenderLayer getRenderType(T animatable, Identifier texture) {
+		return RenderLayer.getEntityCutoutNoCull(texture);
+	}
 
 }

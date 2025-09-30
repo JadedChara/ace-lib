@@ -41,4 +41,5 @@ public class FlagLayer extends AddonBlockModelRenderLayer<PrideFlagBlockEntity> 
 			"textures/flag/"+type+".png");
 		this.MODEL.setTexture(e,this.TEXTURE);
 	}
+
 }

@@ -19,7 +19,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 
 public class PrideFlagBlock extends BlockWithEntity {
@@ -27,7 +26,10 @@ public class PrideFlagBlock extends BlockWithEntity {
 
 	public PrideFlagBlock(Settings settings) {
 		super(settings);
-		this.setDefaultState(getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.NORTH));
+		this.setDefaultState(getDefaultState()
+			.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
+			.with(Properties.ATTACHED, false)
+		);
 	}
 
 	@Override
@@ -58,15 +60,21 @@ public class PrideFlagBlock extends BlockWithEntity {
 	}
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(Properties.HORIZONTAL_FACING);
+		builder.add(Properties.HORIZONTAL_FACING).add(Properties.ATTACHED);
+
 	}
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		boolean wallmount = ctx.getSide().getAxis().isHorizontal() ;
 
-		return this.getDefaultState().with(
-			Properties.HORIZONTAL_FACING,
-			ctx.getPlayer().getHorizontalFacing().getOpposite()
-		);
+		return this.getDefaultState()
+			.with(
+				Properties.HORIZONTAL_FACING,
+				ctx.getPlayer().getHorizontalFacing().getOpposite()
+			).with(
+				Properties.ATTACHED,
+				wallmount
+			);
 	}
 	@Override
 	protected boolean canPathfindThrough(BlockState state, NavigationType type) {
@@ -84,6 +92,7 @@ public class PrideFlagBlock extends BlockWithEntity {
 			state.get(Properties.HORIZONTAL_FACING).equals(Direction.NORTH) ||
 				state.get(Properties.HORIZONTAL_FACING).equals(Direction.SOUTH)
 		){
+
 			return VoxelShapes.cuboid(0.0f, 0.0f, 0.4f, 1.0f, 1.0f, 0.6f);
 		}
 		return VoxelShapes.cuboid(0.4f, 0.0f, 0.0f, 0.6f, 1.0f, 1.0f);

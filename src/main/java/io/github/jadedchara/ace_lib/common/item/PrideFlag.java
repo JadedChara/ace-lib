@@ -9,19 +9,14 @@ import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.renderer.specialty.DynamicGeoItemRenderer;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
-
-import java.util.List;
 import java.util.function.Consumer;
 
 public class PrideFlag extends BlockItem implements GeoItem {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public PrideFlag(Block block,Item.Settings settings) {
 		super(block,settings);
-
-		//this.place();
-
 	}
 
 	@Override
@@ -37,11 +32,11 @@ public class PrideFlag extends BlockItem implements GeoItem {
 	@Override
 	public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
 		consumer.accept(new GeoRenderProvider() {
-			private DynamicGeoItemRenderer<?> renderer = null;
-
+			private GeoItemRenderer<?> renderer = null;
 			@Override
 			public BuiltinModelItemRenderer getGeoItemRenderer() {
 				if(this.renderer == null) {
+
 					this.renderer = new FlagItemRenderer();
 				}
 
