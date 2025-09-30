@@ -93,9 +93,9 @@ public class PrideFlagBlock extends BlockWithEntity {
 				state.get(Properties.HORIZONTAL_FACING).equals(Direction.SOUTH)
 		){
 
-			return VoxelShapes.cuboid(0.0f, 0.0f, 0.4f, 1.0f, 1.0f, 0.6f);
+			return VoxelShapes.cuboid(0.1f, 0.0f, 0.4f, 0.3f, 0.8f, 0.6f);
 		}
-		return VoxelShapes.cuboid(0.4f, 0.0f, 0.0f, 0.6f, 1.0f, 1.0f);
+		return VoxelShapes.cuboid(0.4f, 0.0f, 0.1f, 0.6f, 0.8f, 0.3f);
 	}
 
 }
