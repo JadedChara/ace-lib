@@ -30,6 +30,9 @@ repositories {
 
 	}
 	maven {
+		url = "https://api.modrinth.com/maven"
+	}
+	maven {
 		name = 'BlameJared Maven (CrT / Bookshelf)'
 		url = 'https://maven.blamejared.com'
 	}
@@ -65,7 +68,7 @@ dependencies {
 	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-block:${project.cca_version}"
 	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-world:${project.cca_version}"
-
+	modImplementation("maven.modrinth:item-tooltips:$tooltips_version")
 
 	//Bundled
 	include "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
