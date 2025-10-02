@@ -13,6 +13,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -88,14 +89,99 @@ public class PrideFlagBlock extends BlockWithEntity {
 	}
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-		if(
-			state.get(Properties.HORIZONTAL_FACING).equals(Direction.NORTH) ||
-				state.get(Properties.HORIZONTAL_FACING).equals(Direction.SOUTH)
-		){
+		//Voxel Equivalents
+		// 1/16 - 0.0625F
+		//  1/8 - 0.1250F
+		// 3/16 - 0.1875F
+		//  1/4 - 0.2500F
+		// 5/16 - 0.3125F
+		//  3/8 - 0.3750F
+		// 7/16 - 0.4375F
+		//  1/2 - 0.5000F
+		// 9/16 - 0.5625F
+		//  5/8 - 0.6250F
+		//11/16 - 0.6875F
+		//  3/4 - 0.7500F
+		//13/16 - 0.8125F
+		//  7/8 - 0.8750F
+		//15/16 - 0.9375F
+		//    1 - 1.0000F
 
-			return VoxelShapes.cuboid(0.1f, 0.0f, 0.4f, 0.3f, 0.8f, 0.6f);
+		if(state.get(Properties.HORIZONTAL_FACING).equals(Direction.NORTH)){
+			return VoxelShapes.combine(
+				VoxelShapes.cuboid(
+					0.0625F,
+					0.3750F,
+					0.4600F,
+					0.8125F,
+					0.8750F,
+					0.5400F
+				),
+				VoxelShapes.cuboid(
+					0.8125F,
+					0.0000F,
+					0.4375F,
+					0.9375F,
+					0.8750F,
+					0.5625F
+				),BooleanBiFunction.OR);
+		}else if(state.get(Properties.HORIZONTAL_FACING).equals(Direction.SOUTH)){
+			return VoxelShapes.combine(
+				VoxelShapes.cuboid(
+					0.1875F,
+					0.3750F,
+					0.4600F,
+					0.9375F,
+					0.8750F,
+					0.5400F
+				),
+				VoxelShapes.cuboid(
+					0.0625F,
+					0.0000F,
+					0.4375F,
+					0.1875F,
+					0.8750F,
+					0.5625F
+				), BooleanBiFunction.OR);
+		}else if(state.get(Properties.HORIZONTAL_FACING).equals(Direction.EAST)){
+			return VoxelShapes.combine(
+				VoxelShapes.cuboid(
+					0.4600F,
+					0.3750F,
+					0.0625F,
+					0.5400F,
+					0.8750F,
+					0.8125F
+				),
+				VoxelShapes.cuboid(
+					0.4375F,
+					0.0000F,
+					0.8125F,
+					0.5625F,
+					0.8750F,
+					0.9375F
+				), BooleanBiFunction.OR);
+		}else if(state.get(Properties.HORIZONTAL_FACING).equals(Direction.WEST)){
+			return VoxelShapes.combine(
+				VoxelShapes.cuboid(
+					0.4600F,
+					0.3750F,
+					0.1875F,
+					0.5400F,
+					0.8750F,
+					0.9375F
+				),
+				VoxelShapes.cuboid(
+					0.4375F,
+					0.0000F,
+					0.0625F,
+					0.5625F,
+					0.8750F,
+					0.1875F
+				), BooleanBiFunction.OR);
 		}
-		return VoxelShapes.cuboid(0.4f, 0.0f, 0.1f, 0.6f, 0.8f, 0.3f);
+
+		return VoxelShapes.cuboid(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 }

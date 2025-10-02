@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.component.DataComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
@@ -52,6 +53,10 @@ public class BlockRegistry {
 				.sounds(BlockSoundGroup.WOOL)
 				.dynamicBounds()
 				.nonOpaque()
+				.noCollision()
+				.instrument(NoteBlockInstrument.BELL)
+				.sounds(BlockSoundGroup.WOOL)
+
 
 		),
 		"pride_flag"
