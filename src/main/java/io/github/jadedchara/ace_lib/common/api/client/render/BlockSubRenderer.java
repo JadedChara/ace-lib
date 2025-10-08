@@ -13,7 +13,12 @@ import software.bernie.geckolib.renderer.specialty.DynamicGeoBlockRenderer;
  * @Version 1.0.0
  */
 public class BlockSubRenderer<T extends BlockEntity & GeoAnimatable> extends DynamicGeoBlockRenderer<T> {
-	public BlockSubRenderer(AdjustableGeoBlockModel<T> model) {
+	public BlockSubRenderer(AdjustableGeoBlockModel<T> model, T a) {
 		super(model);
+		//this.anim
+		this.animatable = a;
 	}
+
+
+
 }

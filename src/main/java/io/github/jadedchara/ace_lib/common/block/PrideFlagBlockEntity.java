@@ -28,11 +28,11 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private static final RawAnimation WAVING = RawAnimation
-		.begin().thenLoop("pride_flag.gentle_wave");
+		.begin().thenLoop("animation.pride_flag.gentle_wave");
 	private static final RawAnimation WALLMOUNT = RawAnimation
-		.begin().thenLoop("pride_flag.wall_pole");
+		.begin().thenLoop("animation.pride_flag.wall_pole");
 	private static final RawAnimation FLOOR = RawAnimation
-		.begin().thenLoop("pride_flag.wall_pole");
+		.begin().thenLoop("animation.pride_flag.wall_pole");
 
 
 
@@ -99,13 +99,21 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 	//GECKOLIB
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<GeoAnimatable>(this, state -> {
-			if (this.getWorld().getBlockState(this.getPos()).get(Properties.ATTACHED) == true) {
-				return state.setAndContinue(WALLMOUNT);
+		controllers.add(new AnimationController<GeoAnimatable>(this,"flag", state -> {
+			try{
+
+				//this.getCachedState()
+				if (this.getCachedState().get(Properties.ATTACHED)) {
+					return state.setAndContinue(WALLMOUNT);
+				}
+			}catch(Exception e){
+				//
 			}
 
 			return state.setAndContinue(WAVING);
-		}));
+		})
+			.triggerableAnim("hang",WALLMOUNT)
+		);
 	}
 
 	@Override

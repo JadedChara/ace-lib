@@ -1,6 +1,7 @@
 package io.github.jadedchara.ace_lib.client.render;
 
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.jadedchara.ace_lib.AceLib;
 import io.github.jadedchara.ace_lib.client.model.block.FlagPoleModel;
 import io.github.jadedchara.ace_lib.client.render.layer.FlagLayer;
@@ -9,7 +10,10 @@ import io.github.jadedchara.ace_lib.common.api.client.render.AdjustableGeoBlockM
 import io.github.jadedchara.ace_lib.common.api.client.render.BlockSubRenderer;
 import io.github.jadedchara.ace_lib.common.block.PrideFlagBlockEntity;
 import io.github.jadedchara.ace_lib.client.model.block.PrideFlagModel;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -34,9 +38,8 @@ public class PrideFlagRenderer extends DynamicGeoBlockRenderer<PrideFlagBlockEnt
 	public static Identifier FLAG = Identifier.of(AceLib.MOD_ID, "textures/flag/classic.png");
 
 	public PrideFlagRenderer(BlockEntityRendererFactory.Context context){
-
 		super(new FlagPoleModel(Identifier.of(AceLib.MOD_ID,"flag_pole")));
-		addRenderLayer(new FlagLayer(new PrideFlagModel(),FLAG));
+		addRenderLayer(new FlagLayer(new PrideFlagModel(),FLAG,this));
+		//this.render();
 	}
-
 }

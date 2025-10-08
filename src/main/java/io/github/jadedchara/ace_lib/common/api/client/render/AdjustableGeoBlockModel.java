@@ -42,10 +42,7 @@ public class AdjustableGeoBlockModel<T extends GeoAnimatable> extends DefaultedB
 			this.ANIMATION = t;
 		}
 
-		@Override
-		public RenderLayer getRenderType(T a, Identifier t) {
-			return RenderLayer.getEntityTranslucent(getTextureResource(a));
-		}
+
 
 	}
 

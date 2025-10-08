@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import software.bernie.geckolib.util.Color;
 
@@ -22,15 +23,22 @@ import software.bernie.geckolib.util.Color;
 public class AddonBlockModelRenderLayer<T extends BlockEntity & GeoAnimatable> extends GeoRenderLayer<T> {
 	public Identifier TEXTURE;
 	public AdjustableGeoBlockModel<T> MODEL;
-	public AddonBlockModelRenderLayer(AdjustableGeoBlockModel<T> model, Identifier texture) {
+	public AddonBlockModelRenderLayer(AdjustableGeoBlockModel<T> model,T a, Identifier texture) {
 
-		super(new BlockSubRenderer<T>(model));
+		super(new BlockSubRenderer<>(model, a));
+
 		this.MODEL = model;
 		this.TEXTURE = texture;
-		//this.getGeoModel()
-		//this.render();
-
 	}
+	public AddonBlockModelRenderLayer(GeoRenderer<T> g,AdjustableGeoBlockModel<T> model, Identifier texture) {
+
+		super(g);
+
+		this.MODEL = model;
+		this.TEXTURE = texture;
+	}
+
+
 	@Override
 	public GeoModel<T> getGeoModel() {
 		return this.MODEL;
@@ -76,5 +84,4 @@ public class AddonBlockModelRenderLayer<T extends BlockEntity & GeoAnimatable> e
 				Color.WHITE.getColor()
 			);
 	}
-
 }

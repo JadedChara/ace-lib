@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 public class FlagPoleModel extends AdjustableGeoBlockModel<PrideFlagBlockEntity> {
 	public Identifier MODEL = buildFormattedModelPath(Identifier.of(AceLib.MOD_ID,"flag_pole"));
 	public Identifier TEXTURE = buildFormattedTexturePath(Identifier.of(AceLib.MOD_ID,"flag_pole"));
-	public Identifier ANIMATION = buildFormattedAnimationPath(Identifier.of(AceLib.MOD_ID,"flag_pole"));
+	public Identifier ANIMATION = buildFormattedAnimationPath(Identifier.of(AceLib.MOD_ID,"pride_flag"));
 
 
 	public FlagPoleModel(Identifier reference) {

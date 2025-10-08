@@ -150,7 +150,12 @@
 					"position": {
 						"vector": [-1, 0, 8]
 					}
-				}
+				},
+        "pole": {
+          "scale": {
+            "vector": [0, 0, 0]
+          }
+        }
 			}
 		},
 		"animation.pride_flag.ceiling_hang": {
@@ -163,7 +168,12 @@
 					"position": {
 						"vector": [5, 6, 0]
 					}
-				}
+				},
+        "pole": {
+          "scale": {
+            "vector": [0, 0, 0]
+          }
+        }
 			}
 		},
 		"animation.pride_flag.wall_pole": {

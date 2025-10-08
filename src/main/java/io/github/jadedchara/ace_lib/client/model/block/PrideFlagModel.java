@@ -4,6 +4,7 @@ import io.github.jadedchara.ace_lib.AceLib;
 import io.github.jadedchara.ace_lib.common.api.client.render.AdjustableGeoBlockModel;
 import io.github.jadedchara.ace_lib.common.block.PrideFlagBlockEntity;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -25,6 +26,7 @@ public class PrideFlagModel extends AdjustableGeoBlockModel<PrideFlagBlockEntity
 	public PrideFlagModel() {
 		super(Identifier.of(AceLib.MOD_ID,"pride_flag"));
 
+
 	}
 	@Override
 	public Identifier getAnimationResource(PrideFlagBlockEntity a){
@@ -43,6 +45,7 @@ public class PrideFlagModel extends AdjustableGeoBlockModel<PrideFlagBlockEntity
 			if(temp == null){
 				temp = Identifier.of(AceLib.MOD_ID,"textures/flag/classic.png");
 			}
+
 			return this.TEXTURE = temp;
 		}catch(Exception e){
 			//System.out.println(e);
@@ -51,9 +54,6 @@ public class PrideFlagModel extends AdjustableGeoBlockModel<PrideFlagBlockEntity
 		//return this.TEXTURE;
 	}
 
-	@Override
-	public RenderLayer getRenderType(PrideFlagBlockEntity a, Identifier t) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(a));
-	}
+
 
 }
