@@ -16,6 +16,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import software.bernie.geckolib.renderer.specialty.DynamicGeoBlockRenderer;
 
@@ -36,10 +37,23 @@ public class PrideFlagRenderer extends DynamicGeoBlockRenderer<PrideFlagBlockEnt
 	//public
 	public static Identifier TEST = Identifier.of("minecraft","textures/block/sand.png");
 	public static Identifier FLAG = Identifier.of(AceLib.MOD_ID, "textures/flag/classic.png");
+	public BlockSubRenderer<PrideFlagBlockEntity> bsr;
+	public FlagLayer fl;
 
 	public PrideFlagRenderer(BlockEntityRendererFactory.Context context){
 		super(new FlagPoleModel(Identifier.of(AceLib.MOD_ID,"flag_pole")));
-		addRenderLayer(new FlagLayer(new PrideFlagModel(),FLAG,this));
+		this.bsr = new BlockSubRenderer<PrideFlagBlockEntity>(new PrideFlagModel(), this.getAnimatable());
+		this.fl = new FlagLayer(new PrideFlagModel(),FLAG,this.bsr);
+		addRenderLayer(this.fl);
+		//this.getRenderLayers().get(0).getRenderer().getAnimatable().
 		//this.render();
+	}
+
+	@Override
+	public void render(PrideFlagBlockEntity animatable, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay) {
+		this.fl.RENDERER.render(animatable,partialTick,poseStack,bufferSource,packedLight,packedOverlay);
+		//this.getRenderLayers().set(0,this.fl);
+		//bsr.render(animatable,partialTick,poseStack,bufferSource,packedLight,packedOverlay);
+		super.render(animatable, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
 	}
 }

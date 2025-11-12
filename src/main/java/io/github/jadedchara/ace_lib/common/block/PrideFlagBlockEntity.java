@@ -33,6 +33,7 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 		.begin().thenLoop("animation.pride_flag.wall_pole");
 	private static final RawAnimation FLOOR = RawAnimation
 		.begin().thenLoop("animation.pride_flag.wall_pole");
+	private AnimationController ac;
 
 
 
@@ -99,11 +100,11 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 	//GECKOLIB
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<GeoAnimatable>(this,"flag", state -> {
+		controllers.add(ac = new AnimationController<GeoAnimatable>(this,"flag", state -> {
 			try{
 
 				//this.getCachedState()
-				if (this.getCachedState().get(Properties.ATTACHED)) {
+				if (this.fetchFixedState().get(Properties.ATTACHED)) {
 					return state.setAndContinue(WALLMOUNT);
 				}
 			}catch(Exception e){
@@ -116,12 +117,22 @@ public class PrideFlagBlockEntity extends BlockEntity implements GeoBlockEntity 
 		);
 	}
 
+	public AnimationController getController(){
+		this.markDirty();
+		//ac.getCurrentRawAnimation()
+		return this.ac;
+	}
+
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
 	}
 
 	//Packet Syncing
+
+	public BlockState fetchFixedState(){
+		return this.getWorld().getBlockState(this.getPos());
+	}
 
 	@Nullable
 	@Override

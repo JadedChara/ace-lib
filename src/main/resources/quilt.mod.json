@@ -17,7 +17,8 @@
         "intermediate_mappings": "net.fabricmc:intermediary",
         "entrypoints": {
             "main": "io.github.jadedchara.ace_lib.AceLib",
-						"client": "io.github.jadedchara.ace_lib.client.AceLibClient"
+						"client": "io.github.jadedchara.ace_lib.client.AceLibClient",
+						"cardinal-components-entity": "io.github.jadedchara.ace_lib.common.registry.CCARegistry"
         },
         "depends": [
             {
@@ -38,5 +39,8 @@
 						}
 				]
     },
+		"cardinal-components": [
+			"ace_lib:displayflag"
+		],
     "mixin": "ace_lib.mixins.json"
 }

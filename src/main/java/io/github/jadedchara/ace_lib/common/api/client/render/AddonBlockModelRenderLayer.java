@@ -23,17 +23,32 @@ import software.bernie.geckolib.util.Color;
 public class AddonBlockModelRenderLayer<T extends BlockEntity & GeoAnimatable> extends GeoRenderLayer<T> {
 	public Identifier TEXTURE;
 	public AdjustableGeoBlockModel<T> MODEL;
+	//public T ANIMATABLE;
+	public BlockSubRenderer<T> RENDERER;
+
+	//render fields:
+	public T patchAnimatable;
+	public float partialTick;
+	public MatrixStack poseStack;
+	public VertexConsumerProvider bufferSource;
+	public int packedLight;
+	public int packedOverlay;
+
+
+
 	public AddonBlockModelRenderLayer(AdjustableGeoBlockModel<T> model,T a, Identifier texture) {
 
-		super(new BlockSubRenderer<>(model, a));
+		super(new BlockSubRenderer<T>(model,a));
+		//this.RENDERER = super.getRenderer();
+		//this.ANIMATABLE = a;
 
 		this.MODEL = model;
 		this.TEXTURE = texture;
 	}
-	public AddonBlockModelRenderLayer(GeoRenderer<T> g,AdjustableGeoBlockModel<T> model, Identifier texture) {
+	public AddonBlockModelRenderLayer(BlockSubRenderer<T> g,AdjustableGeoBlockModel<T> model, Identifier texture) {
 
 		super(g);
-
+		this.RENDERER = g;
 		this.MODEL = model;
 		this.TEXTURE = texture;
 	}
@@ -43,6 +58,8 @@ public class AddonBlockModelRenderLayer<T extends BlockEntity & GeoAnimatable> e
 	public GeoModel<T> getGeoModel() {
 		return this.MODEL;
 	}
+
+
 	@Override
 	protected Identifier getTextureResource(T animatable) {
 		return this.TEXTURE;
@@ -53,7 +70,23 @@ public class AddonBlockModelRenderLayer<T extends BlockEntity & GeoAnimatable> e
 	@Deprecated
 	public void updateModel(T animatable){}
 	@Deprecated
-	public void updateAnimations(T animatable){}
+	public void updateAnimations(T animatable){
+	}
+
+	public void withRenderInfo(T patchAnimatable,
+							   float partialTick,
+							   MatrixStack poseStack,
+							   VertexConsumerProvider bufferSource,
+							   int packedLight, int packedOverlay
+							   )
+	{
+		this.RENDERER.setFallbacks(patchAnimatable,partialTick,poseStack,bufferSource,packedLight,packedOverlay);
+	}
+
+	@Override
+	public GeoRenderer<T> getRenderer() {
+		return this.RENDERER;
+	}
 
 	@Override
 	public void render(MatrixStack poseStack,
@@ -69,6 +102,7 @@ public class AddonBlockModelRenderLayer<T extends BlockEntity & GeoAnimatable> e
 		RenderLayer rl = RenderLayer.getEntityCutout(this.getTextureResource(animatable));
 
 		updateTexture(animatable);
+		updateAnimations(animatable);
 
 		getRenderer()
 			.reRender(
