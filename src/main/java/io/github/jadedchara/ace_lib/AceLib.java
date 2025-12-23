@@ -12,7 +12,10 @@ import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.fabric.mixin.itemgroup.ItemGroupAccessor;
+import net.minecraft.block.Block;
 import net.minecraft.entity.data.TrackedData;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
@@ -37,6 +40,7 @@ public class AceLib implements ModInitializer {
 	public static final String MOD_ID = "ace_lib";
     public static final Logger LOGGER = LoggerFactory.getLogger("AceLib");
 	public static TrackedData<String[]> PRIDE_FLAG;
+	public List<ItemStack> communicableStacks;
 
 	public static final ComponentKey<StoredFlagType> DISPLAYFLAG =
 		ComponentRegistry.getOrCreate(Identifier.of("ace_lib", "displayflag"), StoredFlagType.class);
@@ -47,16 +51,18 @@ public class AceLib implements ModInitializer {
         LOGGER.info("Hello Quilt world from AceLib! Stay fresh!");
 		BlockRegistry.init();
 		DataComponentRegistry.init();
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES.SERVER_DATA).registerReloadListener(
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(
 			new SimpleSynchronousResourceReloadListener() {
 				@Override
 				public Identifier getFabricId() {
 					return Identifier.of(MOD_ID, "flag_type_loader");
 				}
 
+
+
 				@Override
 				public void reload(ResourceManager manager) {
-
+					System.out.println("Reloading flag types...");
 					List<ItemStack> prideFlags = new ArrayList<>();
 					ItemStack def = BlockRegistry.PRIDE_FLAG.asItem().getDefaultStack();
 					def.set(
@@ -100,13 +106,20 @@ public class AceLib implements ModInitializer {
 							LOGGER.error("Error occurred while loading resource json: " + id.toString(), e);
 						}
 					}
-					ItemGroupEvents.modifyEntriesEvent(BlockRegistry.PRIDE_FLAGS_KEY).register(ig->{
+					BlockRegistry.PRIDE_FLAGS.getOrInitTabStacks().clear();
+					BlockRegistry.PRIDE_FLAGS.getOrInitTabStacks().add(prideFlags.get(0));
+					BlockRegistry.PRIDE_FLAGS.getOrInitTabStacks().add(prideFlags.get(1));
+					BlockRegistry.PRIDE_FLAGS.getOrInitTabStacks().add(prideFlags.get(2));
+
+
+					/*ItemGroupEvents.modifyEntriesEvent(BlockRegistry.PRIDE_FLAGS_KEY).register(ig->{
 							ig.getDisplayStacks().clear();
 							for(ItemStack is : prideFlags) {
 								ig.getDisplayStacks().add(is);
 							}
+							System.out.println("Appended flags...");
 						}
-					);
+					);*/
 				}
 			}
 		);
@@ -119,7 +132,11 @@ public class AceLib implements ModInitializer {
 						CommandManager.argument("nick", StringArgumentType.string())
 							.executes(context -> {
 								context.getSource().sendFeedback(() -> Text.literal("Called nickname"), false);
-								if(context.getSource().isPlayer()){
+								if(
+									context.getSource().isPlayer() &&
+									StringArgumentType.getString(context,"nick") != null &&
+									!StringArgumentType.getString(context,"nick").startsWith(" ")
+								){
 									context.getSource().getPlayer().setCustomName(
 										Text.of(StringArgumentType.getString(context,"nick"))
 									);
@@ -150,7 +167,10 @@ public class AceLib implements ModInitializer {
 												.getSource()
 												.getPlayer()
 												.getComponent(AceLib.DISPLAYFLAG)
-												.addFlag(StringArgumentType.getString(context,"type"));
+												.setFlag(
+													StringArgumentType.getString(context,"type"),
+													context.getSource().getPlayer()
+												);
 										}catch (Exception e){
 											System.out.println(e);
 										}
@@ -170,7 +190,7 @@ public class AceLib implements ModInitializer {
 							.executes(context -> {
 									context.getSource().sendFeedback(() -> Text.literal("Called fakeplayer"), false);
 									if(context.getSource().isPlayer()){
-
+										//FakePlayer fp = new FakePlayer()
 									}
 									return 1;
 								}

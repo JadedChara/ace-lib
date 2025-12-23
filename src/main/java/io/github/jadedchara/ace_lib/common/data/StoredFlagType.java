@@ -1,5 +1,6 @@
 package io.github.jadedchara.ace_lib.common.data;
 
+import io.github.jadedchara.ace_lib.AceLib;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -13,64 +14,42 @@ import java.util.List;
 
 public class StoredFlagType implements AutoSyncedComponent, ServerTickingComponent {
 	public LivingEntity entity;
-	public List<String> flags;
+	public String flag;
 
-	public List<String> getValue() { return this.getFlags(); }
+	public String getValue() { return this.getFlag(); }
 
 
 	public StoredFlagType(LivingEntity ent){
 		this.entity = ent;
-		this.flags = List.of("transgender");
+		this.flag = "classic";
 	}
 
-	public List<String> getFlags() {
-		return flags;
+	public String getFlag() {
+		return flag;
 	}
 
-	public void addFlag(String f) {
-		this.flags.add(f);
+	public void setFlag(String f, Object p){
+		this.flag = f;
+		AceLib.DISPLAYFLAG.sync(p);
 	}
 
-	public void removeFlag(String f){
-		try{
-			this.flags.remove(f);
-		}catch(Exception e){
-			//flag either doesn't exist, or, y'know...
-		}
-	}
-
-	public void clearFlags(){
-		try{
-			this.flags.clear();
-		}catch(Exception e){
-			//
-		}
+	public void clearFlag(String f){
+		this.flag = "";
 	}
 
 	@Override
 	public void serverTick() {
-
+		//
 	}
-
 
 
 	@Override
 	public void readFromNbt(NbtCompound nbtCompound, HolderLookup.Provider provider) {
-		try{
-			this.flags.clear();
-		}catch(Exception e){
-			//probably means flags is already clear lol.
-		}
-		for (NbtElement elem : nbtCompound.getList("prideflags",8)){
-			this.flags.add(elem.asString());
-		}
-		//this.flags.add(nbtCompound.getList("prideflags", 8));
+		this.flag = nbtCompound.getString("prideflag");
 	}
 
 	@Override
 	public void writeToNbt(NbtCompound nbtCompound, HolderLookup.Provider provider) {
-		for (String elem: this.flags){
-			nbtCompound.putString("prideflags",elem);
-		}
+		nbtCompound.putString("prideflag",this.flag);
 	}
 }
