@@ -4,6 +4,7 @@
   "package": "io.github.jadedchara.ace_lib.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ItemGroupsAccess",
     "PlayerEntityMixin"
   ],
   "client": [
