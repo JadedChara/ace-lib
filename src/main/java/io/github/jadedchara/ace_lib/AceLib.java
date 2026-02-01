@@ -2,8 +2,8 @@ package io.github.jadedchara.ace_lib;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.jadedchara.ace_lib.common.api.common.payload.ReloadFlagsPayload;
 import io.github.jadedchara.ace_lib.common.api.common.payload.UpdateFlagsPayload;
+import io.github.jadedchara.ace_lib.common.command.FlagSuggestionProvider;
 import io.github.jadedchara.ace_lib.common.data.StoredFlagType;
 import io.github.jadedchara.ace_lib.common.registry.BlockRegistry;
 import io.github.jadedchara.ace_lib.common.registry.DataComponentRegistry;
@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.entity.data.TrackedData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -37,7 +36,8 @@ import java.util.List;
 public class AceLib implements ModInitializer {
 	public static final String MOD_ID = "ace_lib";
     public static final Logger LOGGER = LoggerFactory.getLogger("AceLib");
-	public static TrackedData<String[]> PRIDE_FLAG;
+	public List<ItemStack> prideFlags = new ArrayList<>();
+	public static List<String> flagArgs = new ArrayList<>();
 	public static final ComponentKey<StoredFlagType> DISPLAYFLAG =
 		ComponentRegistry.getOrCreate(Identifier.of("ace_lib", "displayflag"), StoredFlagType.class);
 
@@ -45,12 +45,11 @@ public class AceLib implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Hello Quilt world from AceLib! Stay fresh!");
+		//flagArgSet.add("classic");
 		//Backbone stuff
 		BlockRegistry.init();
 		DataComponentRegistry.init();
 		PayloadTypeRegistry.playS2C().register(UpdateFlagsPayload.ID,UpdateFlagsPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(ReloadFlagsPayload.ID,ReloadFlagsPayload.CODEC);
-
 
 		//===============
 		//RELOAD HANDLING
@@ -64,12 +63,14 @@ public class AceLib implements ModInitializer {
 				@Override
 				public void reload(ResourceManager manager) {
 					System.out.println("Reloading flag types...");
-					List<ItemStack> prideFlags = new ArrayList<>();
+					prideFlags.clear();
+					//List<ItemStack> prideFlags = new ArrayList<>();
 					ItemStack def = BlockRegistry.PRIDE_FLAG.asItem().getDefaultStack();
 					def.set(
 						DataComponentRegistry.FLAG_TYPE,
 						"classic"
 					);
+					flagArgs.add("classic");
 					prideFlags.add(def);
 
 					BlockRegistry.PRIDE_FLAGS.getOrInitTabStacks().clear();
@@ -88,14 +89,6 @@ public class AceLib implements ModInitializer {
 							r.close();
 							//
 							try{
-								/*System.out.println(
-									"Retrieved: "
-										+id.toString()
-										+" =\n"
-										+j.get("type").toString()
-										+"\n"
-										+j.get("config").toString()
-								);*/
 								ItemStack temp = BlockRegistry.PRIDE_FLAG.asItem().getDefaultStack();
 								temp.set(
 									DataComponentRegistry.FLAG_TYPE,
@@ -104,7 +97,12 @@ public class AceLib implements ModInitializer {
 										.toString()
 										.replaceAll("\"","")
 								);
-
+								flagArgs.add(
+									j
+										.get("type")
+										.toString()
+										.replaceAll("\"","")
+								);
 								prideFlags.add(temp);
 							}catch(Exception e){
 								LOGGER.error("Error occurred while adding Pride Flag Item: " + e);
@@ -122,23 +120,13 @@ public class AceLib implements ModInitializer {
 								+ " flag! Enjoy!"
 						);
 					}
-					ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player,listener)->{
-						ServerPlayNetworking.send(player,new ReloadFlagsPayload(true));
-						for(ItemStack block: prideFlags){
-							ServerPlayNetworking.send(
-								player,
-								new UpdateFlagsPayload(
-									Identifier.of(AceLib.MOD_ID,"new_flag"),
-									block
-									)
-							);
-						}
-
-					});
-
 				}
 			}
 		);
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player,listener)->{
+			ServerPlayNetworking.send(player,new UpdateFlagsPayload(prideFlags));
+
+		});
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(
 				//nicking
@@ -146,6 +134,7 @@ public class AceLib implements ModInitializer {
 					.requires(source ->source.hasPermission(2))
 					.then(
 						CommandManager.argument("nick", StringArgumentType.string())
+
 							.executes(context -> {
 								context.getSource().sendFeedback(() -> Text.literal("Called nickname"), false);
 								if(
@@ -169,32 +158,91 @@ public class AceLib implements ModInitializer {
 				CommandManager.literal("flag")
 					.requires(source ->source.hasPermission(2))
 					.then(
-						CommandManager.argument("type", StringArgumentType.string())
-							.executes(context -> {
-									context.getSource().sendFeedback(() -> Text.literal("Called flag"), false);
-									if(context.getSource().isPlayer()){
-										/*context
-											.getSource()
-											.getPlayer()
-											.getComponent(AceLib.DISPLAYFLAG)
-											.clearFlags();*/
+						CommandManager.literal("add")
+							.then(CommandManager.argument("type",StringArgumentType.string())
+								.suggests(new FlagSuggestionProvider())
+								.executes(context -> {
+
+								if(context.getSource().isPlayer()){
+									if(flagArgs.contains(StringArgumentType.getString(context,"type"))){
+										context.getSource().sendFeedback(
+											() -> Text.literal(
+												"Added your "+StringArgumentType.getString(context,"type")+" flag."
+											), false
+										);
 										try{
 											context
 												.getSource()
 												.getPlayer()
 												.getComponent(AceLib.DISPLAYFLAG)
-												.setFlag(
+												.addFlag(
 													StringArgumentType.getString(context,"type"),
 													context.getSource().getPlayer()
 												);
 										}catch (Exception e){
 											System.out.println(e);
 										}
+									}else{
+										context.getSource().sendFeedback(
+											()-> Text.literal(
+												"Unable to add a "+StringArgumentType.getString(context,"type")+"flag."
+											), false
+										);
 									}
-									return 1;
 								}
-							)
-					)
+								return 1;
+							}
+						))
+					).then(
+						CommandManager.literal("remove")
+							.then(CommandManager.argument("type", StringArgumentType.string())
+								.suggests(new FlagSuggestionProvider())
+								.executes(context -> {
+								context.getSource().sendFeedback(
+									() -> Text.literal(
+										"Removed your "+StringArgumentType.getString(context,"type")+" flag."
+									),
+									false
+								);
+								if(context.getSource().isPlayer()){
+									try{
+										context
+											.getSource()
+											.getPlayer()
+											.getComponent(AceLib.DISPLAYFLAG)
+											.removeFlag(
+												StringArgumentType.getString(context,"type"),
+												context.getSource().getPlayer()
+											);
+									}catch (Exception e){
+										System.out.println(e);
+									}
+								}
+								return 1;
+							}
+						))
+					).then(
+						CommandManager.literal("clear")
+							.executes(context -> {
+								context.getSource().sendFeedback(
+									() -> Text.literal("Cleared all your pride flags."), false
+								);
+								if(context.getSource().isPlayer()){
+									try{
+										context
+											.getSource()
+											.getPlayer()
+											.getComponent(AceLib.DISPLAYFLAG)
+											.clearFlags(
+												context.getSource().getPlayer()
+											);
+									}catch (Exception e){
+										System.out.println(e);
+									}
+								}
+								return 1;
+							}
+						))
 			);
 
 			dispatcher.register(

@@ -11,17 +11,23 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 @Mixin(PlayerListHud.class)
 public abstract class PlayerListHudMixin implements PlayerListHudAccessor {
 
-
+	//Initial carry-overs
 	public boolean getVisibility(){
 		return this.visible;
 	}
@@ -33,12 +39,14 @@ public abstract class PlayerListHudMixin implements PlayerListHudAccessor {
 	@Shadow
 	protected abstract Text applyGameModeFormatting(PlayerListEntry entry, MutableText name);
 
-	//int y, in render needs to be y+14
+	@Shadow
+	private boolean visible;
 
-	/*@ModifyConstant(method="render",constant = @Constant(intValue = 13))
-	public int tweakBox(int constant){
-		return constant+16;
-	}*/
+	@Shadow
+	protected abstract List<PlayerListEntry> getVisibleEntries();
+
+	//Adjusts width based on flag count. Still experimental.
+
 	@ModifyArg(
 		method = {"render"},
 		at = @At(
@@ -48,13 +56,26 @@ public abstract class PlayerListHudMixin implements PlayerListHudAccessor {
 		index = 0
 	)
 	private int modifywidth(int a){
-		return a+19;
+		int maxFlagWidth = 0;
+		List<PlayerListEntry> entries = this.getVisibleEntries();
+		for(PlayerListEntry entry : entries){
+			int numb = this
+				.client
+				.world
+				.getPlayerByUuid(
+					entry.getProfile().getId()
+				)
+				.getComponent(AceLib.DISPLAYFLAG)
+				.getFlags()
+				.size();
+			if(numb > maxFlagWidth){
+				maxFlagWidth=numb;
+			}
+		}
+		return a+5+(maxFlagWidth*14);
 	}
 
-
-	@Shadow
-	private boolean visible;
-
+	//Adjusts player name for tab-list!
 	@Inject(method="getPlayerName",at=@At("HEAD"),cancellable = true)
 	public void patchlistedname(PlayerListEntry entry, CallbackInfoReturnable<Text> cir){
 		cir.setReturnValue(this.client.world.getPlayerByUuid(entry.getProfile().getId()).getDisplayName() != null ?
@@ -67,29 +88,44 @@ public abstract class PlayerListHudMixin implements PlayerListHudAccessor {
 					Text.literal(String.valueOf(this.client.world.getPlayerByUuid(entry.getProfile().getId()).getName())))));
 	}
 
+	//Adds in the redirect for flags!
 	@Inject(method="renderLatencyIcon",at=@At("HEAD"),cancellable = true)
 	public void insertFlags(GuiGraphics graphics, int width, int x, int y, PlayerListEntry entry, CallbackInfo ci){
 		renderFlagIcon(graphics,width,x,y,entry);
 	}
 
-
-	public void renderFlagIcon(GuiGraphics graphics, int width, int x, int y, PlayerListEntry entry) {
-		Identifier id;
-		String displayflag = this
+	//Handles flag rendering, ignoring if there aren't any.
+	@Unique
+	public void renderFlagIcon(GuiGraphics graphics, int width, int x, int y, @NotNull PlayerListEntry entry) {
+		Set<String> flagSet = this
 			.client
 			.world
 			.getPlayerByUuid(entry.getProfile().getId())
 			.getComponent(AceLib.DISPLAYFLAG)
-			.getFlag();
-		//this.client.getSpriteAtlas().
-		//this.client.getGuiAtlasManager().getSprite()
-		if(displayflag != null || displayflag != ""){
-			displayflag = displayflag.replaceAll("\"","");
-			id = Identifier.of(AceLib.MOD_ID,"textures/flag/"+displayflag+".png");
+			.getFlags();
+		List<String> flagList = new ArrayList<>();
+		flagList.addAll(flagSet);
+		int indexing = 1;
+		for(String f : flagList){
 			graphics.getMatrices().push();
 			graphics.getMatrices().translate(0.0F, 0.0F, 100.0F);
-			graphics.drawTexture(id,x+width-26,y,0.0F,0.0F,12,8,12,8);
+			graphics.drawTexture(
+				Identifier.of(
+					AceLib.MOD_ID,
+					"textures/flag/"+f.replaceAll("\"","")+".png"
+				),
+				x+width-(13+(indexing*13)),
+				y,
+				0.0F,
+				0.0F,
+				12,
+				8,
+				12,
+				8
+			);
 			graphics.getMatrices().pop();
+			indexing++;
 		}
+
 	}
 }
